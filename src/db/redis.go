@@ -21,3 +21,39 @@ func get(words []string, store Store) (string, error) {
 		return "NULL", nil
 	}
 }
+
+func set(words []string, store Store, reverseStore ReverseStore) error {
+	if len(words) != 3 {
+		return errors.New("Invalid SET command. Correct formart: SET [key] [newValue]")
+	}
+
+	key, newValue := words[1], words[2]
+	oldValue := store[key]
+
+	store[key] = newValue
+	_, ok1 := store[key]
+
+	if _, ok2 := reverseStore[oldValue]; ok2 {
+		reverseStore[oldValue] = deleteStoreKeyFromReversedStore(key, reverseStore[newValue])
+	}
+
+	reverseStore[oldValue] = append(reverseStore[oldValue], key)
+	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
+
+	if !ok1 || value2 != key {
+		return errors.New("Error in setting " + key)
+	} else {
+		return nil
+	}
+
+}
+
+func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
+	for index, storeKey := range keys {
+		if storeKey == key {
+			keys = append(keys[:index], keys[index+1:]...)
+			break
+		}
+	}
+	return keys
+}
