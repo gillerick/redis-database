@@ -73,3 +73,7 @@ func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	}
 	return keys
 }
+
+func evaluateCommand(){
+
+}
