@@ -48,6 +48,22 @@ func set(words []string, store Store, reverseStore ReverseStore) (string, error)
 
 }
 
+func del(words []string, store Store) (int, error) {
+	if len(words) < 2 {
+		return 0, errors.New("Invalid DEL command. Correct format: DEL key")
+	}
+
+	keys := words[1:]
+	count := 0
+	for _, key := range keys {
+		delete(store, key)
+		count += 1
+	}
+
+	return count, nil
+
+}
+
 func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	for index, storeKey := range keys {
 		if storeKey == key {
