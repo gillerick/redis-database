@@ -22,9 +22,9 @@ func get(words []string, store Store) (string, error) {
 	}
 }
 
-func set(words []string, store Store, reverseStore ReverseStore) error {
+func set(words []string, store Store, reverseStore ReverseStore) (string, error) {
 	if len(words) != 3 {
-		return errors.New("Invalid SET command. Correct formart: SET [key] [newValue]")
+		return "", errors.New("Invalid SET command. Correct formart: SET [key] [newValue]")
 	}
 
 	key, newValue := words[1], words[2]
@@ -41,9 +41,9 @@ func set(words []string, store Store, reverseStore ReverseStore) error {
 	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
 
 	if !ok1 || value2 != key {
-		return errors.New("Error in setting " + key)
+		return "", errors.New("Error in setting " + key)
 	} else {
-		return nil
+		return "OK", nil
 	}
 
 }
