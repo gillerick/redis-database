@@ -88,6 +88,10 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return set(words, *store, *reverseStore)
 	case "del":
 		return del(words, *store)
+	case "help":
+		return "HELP", nil
+	case "?":
+		return "HELP", nil
 	default:
 		return line, errors.New("Invalid command.")
 	}

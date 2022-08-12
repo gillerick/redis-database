@@ -9,6 +9,10 @@ import (
 )
 
 const prompt = ">> "
+const commands =
+	`GET [key]: Prints value for a given key and NULL if value not in database
+	 SET [key] [value]: Sets database key to the specified value. Returns 'OK' if operation successful
+     DEL [key]: Deletes a key-value pair from the database`
 
 func main() {
 	store := make(db.Store)
@@ -30,6 +34,10 @@ func main() {
 		//Handle any error that might occur
 		if err != nil {
 			fmt.Println(err.Error())
+		}
+
+		if output == "HELP" {
+			fmt.Println(commands)
 		}
 
 		fmt.Println(output)
