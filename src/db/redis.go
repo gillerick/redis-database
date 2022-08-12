@@ -78,6 +78,19 @@ func count(words []string, store Store) (string, error) {
 
 }
 
+func exists(words []string, store Store) (string, error) {
+	if len(words) != 2 {
+		return "", errors.New("Invalid EXISTS command. Correct format: EXISTS [key]")
+	}
+
+	key := words[1]
+	if _, ok := store[key]; ok {
+		return "1", nil
+	} else {
+		return "0", nil
+	}
+}
+
 func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	for index, storeKey := range keys {
 		if storeKey == key {
@@ -104,6 +117,8 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return "HELP", nil
 	case "count":
 		return count(words, *store)
+	case "exists":
+		return exists(words, *store)
 	default:
 		return line, errors.New("Invalid command.")
 	}
