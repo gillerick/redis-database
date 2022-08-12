@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -63,7 +64,7 @@ func del(words []string, store Store) (string, error) {
 		count += 1
 	}
 
-	return string(rune(count)), nil
+	return strconv.Itoa(count), nil
 
 }
 
@@ -78,7 +79,7 @@ func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 }
 
 func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (string, error) {
-	words := strings.Split(line, "")
+	words := strings.Split(line, " ")
 
 	switch command := strings.ToLower(words[0]); command {
 	case "get":
