@@ -1,12 +1,15 @@
 package db
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 //Store is the main database map that maps key to value e.g. {"a": "foo", "b": "foo", "c": "bar"}
 type Store map[string]string
 
-//ReverseStore is the reverse of Store and maps value to key(s) e.g. {"foo" : ["a", "b"]}
-type ReverseStore map[string][]string
+//ReversedStore is the reverse of Store and maps value to key(s) e.g. {"foo" : ["a", "b"]}
+type ReversedStore map[string][]string
 
 func get(words []string, store Store) (string, error) {
 	if len(words) != 2 {
@@ -22,7 +25,7 @@ func get(words []string, store Store) (string, error) {
 	}
 }
 
-func set(words []string, store Store, reverseStore ReverseStore) (string, error) {
+func set(words []string, store Store, reverseStore ReversedStore) (string, error) {
 	if len(words) != 3 {
 		return "", errors.New("Invalid SET command. Correct formart: SET [key] [newValue]")
 	}
@@ -48,9 +51,9 @@ func set(words []string, store Store, reverseStore ReverseStore) (string, error)
 
 }
 
-func del(words []string, store Store) (int, error) {
+func del(words []string, store Store) (string, error) {
 	if len(words) < 2 {
-		return 0, errors.New("Invalid DEL command. Correct format: DEL key")
+		return "0", errors.New("Invalid DEL command. Correct format: DEL key")
 	}
 
 	keys := words[1:]
@@ -60,7 +63,7 @@ func del(words []string, store Store) (int, error) {
 		count += 1
 	}
 
-	return count, nil
+	return string(rune(count)), nil
 
 }
 
@@ -74,6 +77,18 @@ func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	return keys
 }
 
-func evaluateCommand(){
+func evaluateCommand(line string, store *Store, reverseStore *ReversedStore) (string, error) {
+	words := strings.Split(line, "")
+
+	switch command := strings.ToLower(words[0]); command {
+	case "get":
+		return get(words, *store)
+	case "set":
+		return set(words, *store, *reverseStore)
+	case "del":
+		return del(words, *store)
+	default:
+		return line, errors.New("Invalid command.")
+	}
 
 }
