@@ -77,7 +77,7 @@ func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	return keys
 }
 
-func evaluateCommand(line string, store *Store, reverseStore *ReversedStore) (string, error) {
+func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (string, error) {
 	words := strings.Split(line, "")
 
 	switch command := strings.ToLower(words[0]); command {
