@@ -73,14 +73,8 @@ func count(words []string, store Store) (string, error) {
 		return "", errors.New("Invalid COUNT command. Correct format: COUNT [value]")
 	}
 	value := words[1]
-	total := 0
-	for key := range store {
-		if store[key] == value {
-			total += 1
-		}
-	}
-
-	return strconv.Itoa(total), nil
+	total := strconv.Itoa(len(store[value]))
+	return total, nil
 
 }
 
