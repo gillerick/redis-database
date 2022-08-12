@@ -12,7 +12,8 @@ const prompt = ">> "
 const commands =
 	`GET [key]: Prints value for a given key and NULL if value not in database
 	 SET [key] [value]: Sets database key to the specified value. Returns 'OK' if operation successful
-     DEL [key]: Deletes a key-value pair from the database`
+     DEL [key]: Deletes a key-value pair from the database
+     COUNT [value]: Prints the number of keys that have the given value assigned to them. Prints 0 if value not assigned anywhere`
 
 func main() {
 	store := make(db.Store)

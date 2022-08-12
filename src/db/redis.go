@@ -54,17 +54,33 @@ func set(words []string, store Store, reverseStore ReversedStore) (string, error
 
 func del(words []string, store Store) (string, error) {
 	if len(words) < 2 {
-		return "0", errors.New("Invalid DEL command. Correct format: DEL key")
+		return "0", errors.New("Invalid DEL command. Correct format: DEL key [key1] [key2]")
 	}
 
 	keys := words[1:]
-	count := 0
+	total := 0
 	for _, key := range keys {
 		delete(store, key)
-		count += 1
+		total += 1
 	}
 
-	return strconv.Itoa(count), nil
+	return strconv.Itoa(total), nil
+
+}
+
+func count(words []string, store Store) (string, error) {
+	if len(words) != 2 {
+		return "", errors.New("Invalid COUNT command. Correct format: COUNT [value]")
+	}
+	value := words[1]
+	total := 0
+	for key := range store {
+		if store[key] == value {
+			total += 1
+		}
+	}
+
+	return strconv.Itoa(total), nil
 
 }
 
@@ -92,6 +108,8 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return "HELP", nil
 	case "?":
 		return "HELP", nil
+	case "count":
+		return count(words, *store)
 	default:
 		return line, errors.New("Invalid command.")
 	}
