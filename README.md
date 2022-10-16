@@ -30,6 +30,19 @@ OK
 OK
 >> INCR year 7
 2029
+```
 
+### DECR
 
+```text
+>> SET seconds 60
+OK
+>> GET seconds 
+60
+>> DECR seconds
+59
+>> DECR seconds 30
+29
+>> DECR minutes
+The provided key does not exist
 ```

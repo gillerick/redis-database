@@ -136,7 +136,7 @@ func decr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		}
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not have a value")
+			return "", errors.New("The provided key does not exist")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
@@ -154,7 +154,7 @@ func decr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		key := words[1]
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not have a value")
+			return "", errors.New("The provided key does not exist")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
