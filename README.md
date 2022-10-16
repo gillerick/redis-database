@@ -1,3 +1,4 @@
+## Redis DB
 A simple Redis-like in-memory database that can perform the following operations:
 
 | Command & Usage  | Use |
@@ -8,3 +9,18 @@ A simple Redis-like in-memory database that can perform the following operations
 | **COUNT** value   | Return the number of times a value occurs  |
 | **EXISTS** key  | Determine if a key exists  |
 | **INCR** key [increment]  | Increment the integer value of a specified key by 1. Optionally takes in a value |
+
+
+## Demos
+### INCR
+```text
+>> SET age 27
+OK
+>> GET age
+27
+>> INCR age 
+OK
+>> GET age
+28
+
+```
