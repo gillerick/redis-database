@@ -2,6 +2,7 @@ package db
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -91,6 +92,38 @@ func exists(words []string, store Store) (string, error) {
 	}
 }
 
+func incr(words []string, store Store, reverseStore ReversedStore) (string, error) {
+	if len(words) < 2 {
+		return "", errors.New("Invalid INCR command. Correct format: INCR key [increment]")
+	}
+
+	key := words[1]
+	oldValue := store[key]
+	oldValueInt, err := strconv.Atoi(oldValue)
+
+	if err != nil {
+		fmt.Println("%q is not an integer value", oldValue)
+	}
+
+	newValue := oldValueInt + 1
+	store[key] = strconv.Itoa(newValue)
+
+	_, ok1 := store[key]
+
+	if _, ok2 := reverseStore[oldValue]; ok2 {
+		reverseStore[oldValue] = deleteStoreKeyFromReversedStore(key, reverseStore[strconv.Itoa(newValue)])
+	}
+
+	reverseStore[oldValue] = append(reverseStore[oldValue], key)
+	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
+
+	if !ok1 || value2 != key {
+		return "", errors.New("Error in setting " + key)
+	} else {
+		return "OK", nil
+	}
+}
+
 func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	for index, storeKey := range keys {
 		if storeKey == key {
@@ -119,6 +152,8 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return count(words, *store)
 	case "exists":
 		return exists(words, *store)
+	case "incr":
+		return incr(words, *store, *reverseStore)
 	default:
 		return line, errors.New("Invalid command.")
 	}

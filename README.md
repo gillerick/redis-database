@@ -7,3 +7,4 @@ A simple Redis-like in-memory database that can perform the following operations
 | **DELETE** key  | Delete the specified key  |
 | **COUNT** value   | Return the number of times a value occurs  |
 | **EXISTS** key  | Determine if a key exists  |
+| **INCR** key [increment]  | Increment the integer value of a specified key by 1. Optionally takes in a value |
