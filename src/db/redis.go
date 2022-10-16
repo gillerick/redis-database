@@ -124,6 +124,23 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 	}
 }
 
+func setInStoreDeleteFromReversedStore(key string, oldValue string, newValue string, store Store, reverseStore ReversedStore) (string, error) {
+	_, ok1 := store[key]
+
+	if _, ok2 := reverseStore[oldValue]; ok2 {
+		reverseStore[oldValue] = deleteStoreKeyFromReversedStore(key, reverseStore[newValue])
+	}
+
+	reverseStore[oldValue] = append(reverseStore[oldValue], key)
+	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
+
+	if !ok1 || value2 != key {
+		return "", errors.New("Error in setting " + key)
+	} else {
+		return "OK", nil
+	}
+}
+
 func deleteStoreKeyFromReversedStore(key string, keys []string) []string {
 	for index, storeKey := range keys {
 		if storeKey == key {
