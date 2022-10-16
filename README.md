@@ -19,8 +19,14 @@ OK
 >> GET age
 27
 >> INCR age 
-OK
+28
 >> GET age
 28
+ 
+>> SET year 2022
+OK
+>> INCR year 7
+2029
+
 
 ```
