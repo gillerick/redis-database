@@ -56,12 +56,18 @@ func del(words []string, store Store) (string, error) {
 
 }
 
-func count(words []string, store Store) (string, error) {
+func count(words []string, store Store, reversedStore ReversedStore) (string, error) {
 	if len(words) != 2 {
 		return "", errors.New("Invalid COUNT command. Correct format: COUNT [value]")
 	}
+	//var total = 0
+	var values []string
 	value := words[1]
-	total := strconv.Itoa(len(store[value]))
+	for key, _ := range store {
+		values = append(values, key)
+		reversedStore[value] = values
+	}
+	total := strconv.Itoa(len(reversedStore[value]))
 	return total, nil
 
 }
@@ -215,7 +221,7 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 	case "?":
 		return "HELP", nil
 	case "count":
-		return count(words, *store)
+		return count(words, *store, *reverseStore)
 	case "exists":
 		return exists(words, *store)
 	case "incr":

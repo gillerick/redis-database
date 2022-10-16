@@ -25,6 +25,17 @@ OK
 '1'
 ```
 
+### COUNT
+```text
+>>SET a foo
+OK
+>> SET b foo
+OK
+>> COUNT foo
+2
+>> 
+```
+
 ### INCR
 ```text
 >> SET age 27
