@@ -13,9 +13,19 @@ A simple Redis-like in-memory database that can perform the following operations
 | **DECR** key [decrement]  | Decrement the integer value of a specified key by 1. Optionally takes in a decrement value |
 
 ## Demos
+### SET
+```text
+>> SET a '1'
+OK
+```
+
+### GET
+```text
+>> GET a
+'1'
+```
 
 ### INCR
-
 ```text
 >> SET age 27
 OK
@@ -33,7 +43,6 @@ OK
 ```
 
 ### DECR
-
 ```text
 >> SET seconds 60
 OK
