@@ -126,6 +126,53 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 	}
 }
 
+func decr(words []string, store Store, reverseStore ReversedStore) (string, error) {
+	switch len(words) {
+	case 3:
+		key := words[1]
+		increment, err := strconv.Atoi(words[2])
+		if err != nil {
+			fmt.Printf("Increment %s is not an integer", increment)
+		}
+		oldValue := store[key]
+		if oldValue == "" {
+			return "", errors.New("The provided key does not have a value")
+		}
+		oldValueInt, err := strconv.Atoi(oldValue)
+
+		if err != nil {
+			fmt.Printf("%s is not an integer value", oldValue)
+		}
+
+		newValue := oldValueInt - increment
+		newValueString := strconv.Itoa(newValue)
+		store[key] = newValueString
+
+		setInStoreDeleteFromReversedStore(key, oldValue, newValueString, store, reverseStore)
+		return newValueString, nil
+	case 2:
+		key := words[1]
+		oldValue := store[key]
+		if oldValue == "" {
+			return "", errors.New("The provided key does not have a value")
+		}
+		oldValueInt, err := strconv.Atoi(oldValue)
+
+		if err != nil {
+			fmt.Printf("%s is not an integer value", oldValue)
+		}
+
+		newValue := oldValueInt - 1
+		newValueString := strconv.Itoa(newValue)
+		store[key] = newValueString
+		setInStoreDeleteFromReversedStore(key, oldValue, newValueString, store, reverseStore)
+		return newValueString, nil
+	default:
+		return "", errors.New("Invalid DECR command. Correct format: DECR key [decrement]")
+
+	}
+}
+
 func setInStoreDeleteFromReversedStore(key string, oldValue string, newValue string, store Store, reverseStore ReversedStore) (string, error) {
 	_, ok1 := store[key]
 
@@ -173,6 +220,8 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return exists(words, *store)
 	case "incr":
 		return incr(words, *store, *reverseStore)
+	case "decr":
+		return decr(words, *store, *reverseStore)
 	default:
 		return line, errors.New("Invalid command.")
 	}
