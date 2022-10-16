@@ -36,20 +36,7 @@ func set(words []string, store Store, reverseStore ReversedStore) (string, error
 	oldValue := store[key]
 
 	store[key] = newValue
-	_, ok1 := store[key]
-
-	if _, ok2 := reverseStore[oldValue]; ok2 {
-		reverseStore[oldValue] = deleteStoreKeyFromReversedStore(key, reverseStore[newValue])
-	}
-
-	reverseStore[oldValue] = append(reverseStore[oldValue], key)
-	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
-
-	if !ok1 || value2 != key {
-		return "", errors.New("Error in setting " + key)
-	} else {
-		return "OK", nil
-	}
+	return setInStoreDeleteFromReversedStore(key, oldValue, newValue, store, reverseStore)
 
 }
 
@@ -106,22 +93,10 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 	}
 
 	newValue := oldValueInt + 1
-	store[key] = strconv.Itoa(newValue)
+	newValueString := strconv.Itoa(newValue)
+	store[key] = newValueString
 
-	_, ok1 := store[key]
-
-	if _, ok2 := reverseStore[oldValue]; ok2 {
-		reverseStore[oldValue] = deleteStoreKeyFromReversedStore(key, reverseStore[strconv.Itoa(newValue)])
-	}
-
-	reverseStore[oldValue] = append(reverseStore[oldValue], key)
-	value2 := reverseStore[oldValue][len(reverseStore[oldValue])-1]
-
-	if !ok1 || value2 != key {
-		return "", errors.New("Error in setting " + key)
-	} else {
-		return "OK", nil
-	}
+	return setInStoreDeleteFromReversedStore(key, oldValue, newValueString, store, reverseStore)
 }
 
 func setInStoreDeleteFromReversedStore(key string, oldValue string, newValue string, store Store, reverseStore ReversedStore) (string, error) {
