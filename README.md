@@ -6,7 +6,7 @@ A simple Redis-like in-memory database that can perform the following operations
 | ------------- | ------------- |
 | **SET** key value  | Set the string value of a key to the specified value  |
 | **GET** key  | Get the value of a specified key  |
-| **DELETE** key  | Delete the specified key  |
+| **DEL** key  | Delete the specified key  |
 | **COUNT** value   | Return the number of times a value occurs  |
 | **EXISTS** key  | Determine if a key exists  |
 | **INCR** key [increment]  | Increment the integer value of a specified key by 1. Optionally takes in an increment value |
@@ -25,6 +25,18 @@ OK
 '1'
 ```
 
+### DEL
+```text
+>> SET a foo
+OK
+>> GET a
+foo
+>> DEL a
+1
+>> GET a
+NULL
+
+```
 ### COUNT
 ```text
 >>SET a foo
@@ -36,6 +48,15 @@ OK
 >> 
 ```
 
+### EXISTS
+```text
+>> EXISTS key
+0
+>> SET key value
+OK
+>> EXISTS key
+1
+```
 ### INCR
 ```text
 >> SET age 27
