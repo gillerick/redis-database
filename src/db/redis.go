@@ -66,9 +66,23 @@ func get_set(words []string, store Store, reverseStore ReversedStore) (string, e
 
 }
 
+func m_set(words []string, store Store, reverseStore ReversedStore) (string, error) {
+	if len(words) < 3 {
+		return "", errors.New("invalid MSET command. Correct format: MSET key value [key value]")
+	}
+
+	switch len(words) {
+	case 3:
+		return set(words, store, reverseStore)
+	default:
+		//ToDo: Implement
+		return "", nil
+	}
+}
+
 func del(words []string, store Store) (string, error) {
 	if len(words) < 2 {
-		return "0", errors.New("Invalid DEL command. Correct format: DEL key [key1] [key2]")
+		return "0", errors.New("invalid DEL command. Correct format: DEL key [key1] [key2]")
 	}
 
 	keys := words[1:]
@@ -84,9 +98,8 @@ func del(words []string, store Store) (string, error) {
 
 func count(words []string, store Store, reversedStore ReversedStore) (string, error) {
 	if len(words) != 2 {
-		return "", errors.New("Invalid COUNT command. Correct format: COUNT [value]")
+		return "", errors.New("invalid COUNT command. Correct format: COUNT [value]")
 	}
-	//var total = 0
 	var values []string
 	value := words[1]
 	for key, _ := range store {
@@ -117,7 +130,7 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		key := words[1]
 		increment, err := strconv.Atoi(words[2])
 		if err != nil {
-			fmt.Printf("Increment %s is not an integer", increment)
+			fmt.Printf("Increment %d is not an integer", increment)
 		}
 		oldValue := store[key]
 		if oldValue == "" {
@@ -256,6 +269,8 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return decr(words, *store, *reverseStore)
 	case "getset":
 		return get_set(words, *store, *reverseStore)
+	case "mset":
+		return m_set(words, *store, *reverseStore)
 	default:
 		return line, errors.New("invalid command")
 	}

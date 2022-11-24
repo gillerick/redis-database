@@ -17,6 +17,7 @@ const commands = `GET key: Prints value for a given key and NULL if value not in
      INCR key [increment]: Increments a value by increment (if provided), otherwise by 1
      DECR key [decrement]: Decrements a value by decrement (if provided), otherwise by 1
      GETSET key value: Sets the string value of a key and return its old value                                 
+     MSET key value [key value]: Sets multiple keys to multiple values                                 
 	 `
 
 func main() {
