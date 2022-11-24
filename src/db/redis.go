@@ -7,15 +7,15 @@ import (
 	"strings"
 )
 
-//Store is the main database map that maps key to value e.g. {"a": "foo", "b": "foo", "c": "bar"}
+// Store is the main database map that maps key to value e.g. {"a": "foo", "b": "foo", "c": "bar"}
 type Store map[string]string
 
-//ReversedStore is the reverse of Store and maps value to key(s) e.g. {"foo" : ["a", "b"]}
+// ReversedStore is the reverse of Store and maps value to key(s) e.g. {"foo" : ["a", "b"]}
 type ReversedStore map[string][]string
 
 func get(words []string, store Store) (string, error) {
 	if len(words) != 2 {
-		return "", errors.New("Invalid GET command. Correct format: GET [name]")
+		return "", errors.New("invalid GET command. Correct format: GET [name]")
 	}
 
 	key := words[1]
@@ -29,7 +29,7 @@ func get(words []string, store Store) (string, error) {
 
 func set(words []string, store Store, reverseStore ReversedStore) (string, error) {
 	if len(words) != 3 {
-		return "", errors.New("Invalid SET command. Correct formart: SET [key] [newValue]")
+		return "", errors.New("invalid SET command. Correct format: SET [key] [newValue]")
 	}
 
 	key, newValue := words[1], words[2]
@@ -37,6 +37,32 @@ func set(words []string, store Store, reverseStore ReversedStore) (string, error
 
 	store[key] = newValue
 	return setInStoreDeleteFromReversedStore(key, oldValue, newValue, store, reverseStore)
+
+}
+
+func get_set(words []string, store Store, reverseStore ReversedStore) (string, error) {
+	if len(words) != 3 {
+		return "", errors.New("invalid GETSET command. Correct format: GETSET [key] [newValue]")
+	}
+
+	//1. Get original value
+	key, newValue := words[1], words[2]
+	var oldValue string
+
+	if value, ok := store[key]; ok {
+		oldValue = value
+	} else {
+		return "", fmt.Errorf("key %s does not exist", key)
+	}
+
+	//2. Set the new value
+	store[key] = newValue
+	_, err := setInStoreDeleteFromReversedStore(key, oldValue, newValue, store, reverseStore)
+	if err != nil {
+		return "", fmt.Errorf("GETSET failed with error: %w", err)
+	}
+
+	return oldValue, nil
 
 }
 
@@ -74,7 +100,7 @@ func count(words []string, store Store, reversedStore ReversedStore) (string, er
 
 func exists(words []string, store Store) (string, error) {
 	if len(words) != 2 {
-		return "", errors.New("Invalid EXISTS command. Correct format: EXISTS [key]")
+		return "", errors.New("invalid EXISTS command. Correct format: EXISTS [key]")
 	}
 
 	key := words[1]
@@ -95,7 +121,7 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		}
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not have a value")
+			return "", errors.New("the provided key does not have a value")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
@@ -113,7 +139,7 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		key := words[1]
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not have a value")
+			return "", errors.New("the provided key does not have a value")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
@@ -127,7 +153,7 @@ func incr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		setInStoreDeleteFromReversedStore(key, oldValue, newValueString, store, reverseStore)
 		return newValueString, nil
 	default:
-		return "", errors.New("Invalid INCR command. Correct format: INCR key [increment]")
+		return "", errors.New("invalid INCR command. Correct format: INCR key [increment]")
 
 	}
 }
@@ -138,11 +164,11 @@ func decr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		key := words[1]
 		increment, err := strconv.Atoi(words[2])
 		if err != nil {
-			fmt.Printf("Increment %s is not an integer", increment)
+			fmt.Printf("Increment %d is not an integer", increment)
 		}
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not exist")
+			return "", errors.New("the provided key does not exist")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
@@ -160,7 +186,7 @@ func decr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		key := words[1]
 		oldValue := store[key]
 		if oldValue == "" {
-			return "", errors.New("The provided key does not exist")
+			return "", errors.New("the provided key does not exist")
 		}
 		oldValueInt, err := strconv.Atoi(oldValue)
 
@@ -174,7 +200,7 @@ func decr(words []string, store Store, reverseStore ReversedStore) (string, erro
 		setInStoreDeleteFromReversedStore(key, oldValue, newValueString, store, reverseStore)
 		return newValueString, nil
 	default:
-		return "", errors.New("Invalid DECR command. Correct format: DECR key [decrement]")
+		return "", errors.New("invalid DECR command. Correct format: DECR key [decrement]")
 
 	}
 }
@@ -228,8 +254,10 @@ func EvaluateCommand(line string, store *Store, reverseStore *ReversedStore) (st
 		return incr(words, *store, *reverseStore)
 	case "decr":
 		return decr(words, *store, *reverseStore)
+	case "getset":
+		return get_set(words, *store, *reverseStore)
 	default:
-		return line, errors.New("Invalid command.")
+		return line, errors.New("invalid command")
 	}
 
 }
