@@ -88,3 +88,15 @@ OK
 >> DECR minutes
 The provided key does not exist
 ```
+
+### GETSET
+```text
+>> SET month August
+OK
+>> GET month
+August
+>> GETSET month November
+August
+>> GET month
+November
+```
